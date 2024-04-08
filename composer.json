@@ -1,0 +1,17 @@
+{
+    "name": "cerqu/teammate",
+    "description": "User Management System for TeamMate Products",
+    "autoload": {
+        "psr-4": {
+            "Teammate\\": "app/"
+        }
+    },
+    
+    "authors": [
+        {
+            "name": "xryv",
+            "email": "bru.cerqueira5@gmail.com"
+        }
+    ],
+    "require": {}
+}
