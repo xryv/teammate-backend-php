@@ -1,3 +1,8 @@
+Let's enhance the code's indentation, add comments in French, and provide a front comment in pseudocode. Then, I'll compile a README summarizing key elements.
+
+### Enhanced Code
+
+```php
 <?php // app/Core/Application.php
 
 // Utilisation de l'espace de noms pour la structuration des composants de l'application
@@ -71,7 +76,7 @@ class Application {
     // Méthode pour exécuter l'application
     public function run() {
         try {
-            $this->router->dispatch(); // Résolution de la route demandée
+            $this->router->resolve(); // Résolution de la route demandée
         } catch (\Exception $e) {
             $this->handleException($e); // Gestion des exceptions
         }
@@ -93,3 +98,28 @@ class Application {
         return self::$ROOT_DIR;
     }
 }
+```
+
+### README
+
+**Overview:**
+This README outlines the core structure and functionalities of the Application class within the PHP application framework.
+
+**Table of Contents:**
+- **Application Initialization**
+- **Configuration Loading**
+- **Component Initialization**
+- **Exception Handling**
+- **Utility Methods**
+
+| Section                    | Description                                              |
+|----------------------------|----------------------------------------------------------|
+| **Application Initialization
+
+** | Initializes the application with essential components like Router, Request, Response, Database, Logger, Session, Authentication, and Authorization systems. |
+| **Configuration Loading**     | Loads application configurations from a specified file, setting up database connections and environment settings. |
+| **Component Initialization**  | Instantiates and prepares core components such as the request handler, response system, routing mechanism, database interface, logging service, session manager, authenticator, and authorization checker. |
+| **Exception Handling**        | Implements a strategy for catching and handling exceptions, ensuring graceful degradation in case of errors. Displays detailed error messages in development mode and generic messages in production. |
+| **Utility Methods**           | Includes methods for retrieving the application's root path and other utility operations. |
+
+This documentation and code enhancements aim to improve understanding, maintainability, and ease of integration within the broader application context.

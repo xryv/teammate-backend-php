@@ -7,17 +7,37 @@ use PDOException; // Import PDOException class
 use Exception; // Import Exception class
 use App\Core\ValidationException; // Import ValidationException class
 use App\Core\ErrorHandling; // Import ErrorHandling functions
-use App\Core\Logger;
 
 
 session_start();
 
-// Include error handling functions
-include_once __DIR__ . '/error.php';
-// Include the Logger class
-include_once __DIR__ . '/../../Core/Logger.php';
+
 // Inclusion des fichiers d'en-tête pour la configuration globale ou spécifique à la page
 include_once __DIR__ . '/../header.php';
+
+
+function fetchCountriesFromJson() {
+    $jsonPath = __DIR__ . '/../vendor/countries.json';
+    if (file_exists($jsonPath)) {
+        $jsonContent = file_get_contents($jsonPath);
+        $countriesData = json_decode($jsonContent, true); // Convertir en tableau associatif
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            die("Erreur lors de la décodification du JSON : " . json_last_error_msg());
+        }
+        $countries = [];
+        foreach ($countriesData as $country) {
+            $commonName = $country['name']['common']; // Extraction du nom commun
+            $cca2 = $country['cca2']; // Code pays à deux lettres
+            $countries[$cca2] = $commonName; // Associer code pays et nom commun
+        }
+        asort($countries); // Tri des pays par nom
+        return $countries;
+    } else {
+        die("Fichier JSON non trouvé à l'emplacement : " . $jsonPath);
+    }
+}
+
+
 
 
 $registrationFeedback = '';
@@ -52,48 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // 'role', 'status' seront définis dans la logique de votre application
                 
             ]);
-
-            // Validation de l'email
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $registrationFeedback = "L'adresse e-mail n'est pas valide.";
-            }
-            // Validation du mot de passe
-            elseif (strlen($password) < 8) {
-                $registrationFeedback = "Le mot de passe doit contenir au moins 8 caractères.";
-            }
-            // Validation de la correspondance des mots de passe
-            elseif ($password !== $confirmPassword) {
-                $registrationFeedback = "Les mots de passe ne correspondent pas.";
-            }
-            // Validation du nom d'utilisateur
-            elseif (strlen($username) < 3) {
-                $registrationFeedback = "Le nom d'utilisateur doit contenir au moins 3 caractères.";
-            }
-            // Vérification si le nom d'utilisateur contient des caractères non autorisés
-            elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
-                $registrationFeedback = "Le nom d'utilisateur ne peut contenir que des lettres, des chiffres et des underscores.";
-            }
-            // Validation du prénom
-            elseif (strlen($name) > 30) {
-                $registrationFeedback = "Le prénom ne peut pas dépasser 30 caractères.";
-            }
-            // Validation du nom de famille
-            elseif (strlen($surname) > 30) {
-                $registrationFeedback = "Le nom de famille ne peut pas dépasser 30 caractères.";
-            }
-            // Validation de la date de naissance
-            elseif (!strtotime($born)) {
-                $registrationFeedback = "La date de naissance n'est pas valide.";
-            }
-            // Vérification si la date de naissance est dans le passé
-            elseif (strtotime($born) > time()) {
-                $registrationFeedback = "La date de naissance ne peut être dans le futur.";
-            }
-            // Validation du pays
-            elseif (!in_array($country, ['FR', 'DE', 'US', 'CA'])) {
-                $registrationFeedback = "Pays non valide. Veuillez choisir parmi les options disponibles.";
-            }
-
             
             if ($result) {
                 $registrationFeedback = "Inscription réussie. Vous pouvez maintenant vous connecter.";
@@ -102,19 +80,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } catch (PDOException $e) {
             $registrationFeedback = "Erreur de base de données lors de l'inscription : " . $e->getMessage();
-            // Log the error using the Logger class
-            $logger = new Logger();
-            $logger->error($registrationFeedback);
+            // Log the error using the ErrorHandling functions
+            logError($registrationFeedback);
         } catch (ValidationException $e) {
             $registrationFeedback = "Erreur de validation lors de l'inscription : " . $e->getMessage();
-            // Log the error using the Logger class
-            $logger = new Logger();
-            $logger->error($registrationFeedback);
+            // Log the error using the ErrorHandling functions
+            logError($registrationFeedback);
         } catch (Exception $e) {
             $registrationFeedback = "Erreur lors de l'inscription : " . $e->getMessage();
-            // Log the error using the Logger class
-            $logger = new Logger();
-            $logger->error($registrationFeedback);
+            // Log the error using the ErrorHandling functions
+            logError($registrationFeedback);
         }
     }
 }
@@ -126,8 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Inscription</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="\public\js\fetch_countries.js" defer></script>
-    <script src="../../../public/js/fetch_countries.js" defer></script>
+    <!-- <script src="/src/js/fetch_countries.js" defer></script> -->
 </head>
 <body>
 <main class="mt-10">
@@ -166,22 +140,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="date" id="born" name="born" required class="w-full px-3 py-2 border rounded">
             </div>
 
-
+            <?php $countries = fetchCountriesFromJson(); ?>
             <div class="mb-4">
                 <label for="country" class="font-bold mb-2">Pays :</label>
                 <select id="country" name="country" required class="w-full px-3 py-2 border rounded">
-                    <!-- Options will be populated dynamically by JavaScript -->
+                    <?php foreach ($countries as $countryCode => $countryName): ?>
+                        <option value="<?= htmlspecialchars($countryCode) ?>"><?= htmlspecialchars($countryName) ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 
 
-
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">S'inscrire</button>
-                <div class="mt-3 text-red-500"><?= htmlspecialchars($registrationFeedback) ?></div>
-            </form>
-        </section>
-    </main>
+            <div class="mt-3 text-red-500"><?= htmlspecialchars($registrationFeedback) ?></div>
+        </form>
+    </section>
+</main>
 </body>
 </html>
 
-<?php include_once __DIR__ . '/../footer.php'; ?>
+<?php
+include_once __DIR__ . '/../footer.php';
+?>

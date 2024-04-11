@@ -1,0 +1,58 @@
+# GIT COMMANDS
+# Cloning and Branching
+git clone <repository_url> # Clone repository
+git branch # List branches
+git branch <branch_name> # Create new branch
+git checkout <branch_name> # Switch to a branch
+git merge <branch_name> # Merge a branch into the current branch
+git branch -d <branch_name> # Delete a branch
+
+# Staging and Repository Status
+git status # Show the working tree status
+git add <file_or_directory> # Add file(s) to the staging area
+git reset <file_or_directory> # Unstage file(s)
+git diff # Show changes between commits, commit and working tree, etc
+
+# Commits and Version History
+git commit -m "Commit message" # Commit changes
+git log # Show commit logs
+git log --oneline --graph # Show commit logs in a compact graph format
+git show <commit_hash> # Show various types of objects
+
+# Remote Repositories and Updating
+git remote -v # List remote connections
+git remote add <name> <url> # Add a new remote
+git fetch <remote> # Download objects and refs from another repository
+git pull <remote> <branch> # Fetch from and integrate with another repository or a local branch
+git push <remote> <branch> # Update remote refs along with associated objects
+
+# Stashing and Reflogs
+git stash # Stash the changes in a dirty working directory
+git stash pop # Apply stashed changes back to the working directory
+git reflog # Show a log of changes to the local repository's HEAD
+
+# Composer COMMANDS
+composer install # Install the project dependencies
+composer update # Update all packages to their latest versions
+composer require <package> # Add new package to composer.json and install it
+composer dump-autoload # Regenerate the list of all classes that need to be included in the project
+
+# PHP COMMANDS
+php -S localhost:8000 -t public/ # Start the PHP built-in web server
+php -m # List PHP compiled modules
+php -i # Output PHP configuration (phpinfo)
+php <path_to_script> # Execute a PHP script
+
+# MySQL COMMANDS
+mysql -u <username> -p<password> -e "source <path_to_sql_file>" # Execute a SQL script file
+mysql -u <username> -p<password> -e "SHOW DATABASES;" # List databases
+mysql -u <username> -p<password> -e "USE <database>; SHOW TABLES;" # List tables in a database
+mysql -u <username> -p<password> -e "DESCRIBE <table>;" # Describe table structure
+
+# Tailwind CSS COMMANDS (placeholders)
+# Assuming you will use npm or yarn to manage your Tailwind CSS installation
+tailwindcss init # Create a Tailwind config file
+tailwindcss build <input.css> -o <output.css> # Build your CSS using the config file
+tailwindcss -i <input.css> -o <output.css> --watch # Watch for changes and rebuild CSS automatically
+
+# Note: Commands should be modified with actual paths, usernames, passwords, and options as necessary for the specific project environment.

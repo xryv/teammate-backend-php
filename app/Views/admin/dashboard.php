@@ -1,9 +1,10 @@
 <?php
 // app\Views\admin\dashboard.php
 // - Mix PHP logic with HTML to render the admin dashboard view.
+namespace App\Views\admin;
 
 // Include the header view
-include_once 'header.php';
+include_once '/../header.php';
 ?>
 
 <div class="dashboard">
@@ -12,5 +13,5 @@ include_once 'header.php';
 
 <?php
 // Include the footer view
-include_once 'footer.php';
+include_once '/../footer.php';
 ?>
